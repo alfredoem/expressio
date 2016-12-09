@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		* { margin:0; padding:0; font-size:11px; font-family:arial; color:#444; }
+		body { padding:20px; }
+		#message-list { list-style-type:none; width:300px; height:300px; overflow:auto; border:1px solid #999; padding:20px; }
+		#message-list li { border-bottom:1px solid #ccc; padding-bottom:2px; margin-bottom:5px; }
+		code { font-family:courier; background:#eee; padding:2px 4px; }
+	</style>
+</head>
+<body>
+	<h1>Socket Client</h1>
+  
+  <code id="code"></code>
+  
+  
+  <script src="node_modules/socket.io-client/dist/socket.io.js"> </script>
+	<script>
+
+		// Create SocketIO instance
+		var socket = new io.connect('http://localhost:8080', {
+      query: "playerId=2"
+    });
+				
+		// Add a connect listener
+		socket.on('connect',function() {
+			console.log('Client has connected to the server!');
+		});
+		// Add a connect listener
+		socket.on('message',function(data) {
+			alert('Received a message from the server:  ' + data);
+		});
+		// Add a disconnect listener
+		socket.on('disconnect',function() {
+			alert('The client has disconnected!');
+		});
+
+    socket.on('issue', function(data){
+      console.log(typeof data);
+      document.getElementById('code').innerHTML = JSON.stringify(data, null, '\t');
+    });
+		
+	</script>
+</body>
+</html>
