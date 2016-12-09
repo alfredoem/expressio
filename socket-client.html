@@ -12,34 +12,49 @@
 <body>
 	<h1>Socket Client</h1>
   
-  <code id="code"></code>
-  
+  <p>
+    <code id="code"></code>
+  </p>
   
   <script src="node_modules/socket.io-client/dist/socket.io.js"> </script>
 	<script>
+    
+      var playerId = getParameterByName('playerId');
+            
+      // Create SocketIO instance
+      var socket = new io.connect('http://localhost:8080', {
+        query: "playerId=" + parseInt(playerId)
+      });
+          
+      // Add a connect listener
+      socket.on('connect',function() {
+        console.log('Client has connected to the server!');
+      });
+      // Add a connect listener
+      socket.on('message',function(data) {
+        alert('Received a message from the server:  ' + data);
+      });
+      // Add a disconnect listener
+      socket.on('disconnect',function() {
+        alert('The client has disconnected!');
+      });
 
-		// Create SocketIO instance
-		var socket = new io.connect('http://localhost:8080', {
-      query: "playerId=2"
-    });
-				
-		// Add a connect listener
-		socket.on('connect',function() {
-			console.log('Client has connected to the server!');
-		});
-		// Add a connect listener
-		socket.on('message',function(data) {
-			alert('Received a message from the server:  ' + data);
-		});
-		// Add a disconnect listener
-		socket.on('disconnect',function() {
-			alert('The client has disconnected!');
-		});
-
-    socket.on('issue', function(data){
-      console.log(typeof data);
-      document.getElementById('code').innerHTML = JSON.stringify(data, null, '\t');
-    });
+      socket.on('issue', function(data){
+        console.log(typeof data);
+        document.getElementById('code').innerHTML = JSON.stringify(data, null, '\t');
+      });
+      
+      function getParameterByName(name, url) {
+          if (!url) {
+            url = window.location.href;
+          }
+          name = name.replace(/[\[\]]/g, "\\$&");
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+              results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+      }
 		
 	</script>
 </body>
